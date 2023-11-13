@@ -24,7 +24,14 @@ const rovers = async () => {
         console.error(e);
     }
 
-    return response.data;
+    const filteredData = response.data.rovers.map((rover) => {
+        return {
+            id: rover.id,
+            name: rover.name,
+        }
+    });
+
+    return filteredData;
 };
 
 const photos = async (roverName, cameraType) => {
