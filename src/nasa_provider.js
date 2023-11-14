@@ -33,7 +33,9 @@ const rovers = async () => {
     try {
         response = await axios.get(createRequest('/rovers'));
     } catch (e) {
-        return createErrorResponse(e);
+        const errorResponse = createErrorResponse(e);
+        console.error(errorResponse);
+        return errorResponse;
     }
 
     const filteredData = response.data.rovers.map((rover) => {
