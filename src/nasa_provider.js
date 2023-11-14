@@ -1,5 +1,17 @@
 import axios from "axios";
 
+const createErrorResponse = (error) => {
+    if (error.response) {
+        if (error.response.status === 429) {
+            return { "error": "NASA API limit exceeded."};
+        } else {
+            return { "error": `NASA API returned error ${error.response.status}`};
+        }
+    } else {
+        return { "error": "Unknown error", "details": error.config };
+    }
+}
+
 const createRequest = (path, params) => {
     let request = `${process.env.MARS_PHOTOS_URL}${path}`;
 
@@ -21,14 +33,17 @@ const rovers = async () => {
     try {
         response = await axios.get(createRequest('/rovers'));
     } catch (e) {
-        console.error(e);
+        return createErrorResponse(e);
     }
 
     const filteredData = response.data.rovers.map((rover) => {
         return {
             id: rover.id,
             name: rover.name,
-        }
+            cameras: rover.cameras.map((camera) => { 
+                return { name: camera.name, fullName: camera.full_name };
+            }),
+        };
     });
 
     return filteredData;
