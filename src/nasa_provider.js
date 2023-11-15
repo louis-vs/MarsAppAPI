@@ -61,7 +61,9 @@ const photos = async (roverName, cameraType) => {
         const request = createRequest(`/rovers/${roverName}/photos`, requestParams);
         response = await axios.get(request);
     } catch (e) {
-        console.error(e);
+        const errorResponse = createErrorResponse(e);
+        console.error(errorResponse);
+        return errorResponse;
     }
 
     const filteredData = response.data.photos.map((photo) => {
